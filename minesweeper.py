@@ -42,8 +42,8 @@ def startnewGame():
     for i in range(MINES):
         printf ("%d ", minesArray[i])
     y = 0
-    x = 0
     for row in buttons:
+        x = 0
         for button in row:
             button['text'] = '?'
             button.isOpen = False
