@@ -3,8 +3,7 @@ from tkinter import *
 import functools
 import random
 from printf import printf
-
-
+import time
 
 # Defining the number of rows and columns
 
@@ -29,10 +28,10 @@ minesArray = random.sample(range(0, rowTimesCol), \
         MINES)
 # buttons is an array of buttons...
 buttons = []
-# Reset button
 
 # Conversion: array form to x and y coordinate form
 # Array[z] = (x*ROWS) + y
+
 
 def main():
     buildButtons()
@@ -55,16 +54,21 @@ def startnewGame():
         y += 1
 
 def buildButtons():
+    # For time
+    sec = IntVar()
+    timer = Label(textvariable=sec)
+    timer.grid(columnspan=10, sticky=EW)
+    # For game restart
     newGame = Button()
     newGame['text'] = 'New Game'
     newGame['bg'] = '#F55F55'
-    newGame['command'] = startnewGame
-    newGame.grid(column=0, row=0, columnspan=COLS)
+    newGame['command'] = startnewGame # !@!also reset timer
+    newGame.grid(column=0, row=1, columnspan=COLS)    
     for y in range(ROWS):
         row = []
         for x in range(COLS):
             button = Button()
-            button.grid(column=x, row=y+1)
+            button.grid(column=x, row=y+2)
             button['text'] = '?'
             button['bg'] = "#F55F55"
             # Add background images!!!
@@ -76,9 +80,13 @@ def buildButtons():
                 button.isMine = False
             command = functools.partial( \
                 onButtonClick, x, y)
+
+            # button.bind('<Button-1>', command)
+            # button.bind('<Button-3>', rig)
             button['command'] = command
             row.append(button)
         buttons.append(row)
+
 
 def onButtonClick(x, y): 
     button = buttons[y][x]
@@ -91,20 +99,18 @@ def onButtonClick(x, y):
     num = str(countMinesAround(x,y))
     if button.isMine == True:
         button['text'] = 'X'
-
     elif num == '0':
         button['text'] = ' '
-        # Clicking all buttons recursively until no.
+        # Clicking all buttons recursively until 
+        # a number is reached
         for i in range(-1, 2):
-            check_x = i + x
+            a = i + x
             for j in range(-1, 2):
-                check_y = j + y
+                b = j + y
                 # Checking for edge cases
-                if(check_x >= 0 and \
-                    check_x < COLS and \
-                    check_y >= 0 and \
-                    check_y < ROWS):
-                    onButtonClick(check_x, check_y)
+                if(a >= 0 and a < COLS and \
+                    b >= 0 and b < ROWS):
+                    onButtonClick(a, b)
     else:
         button['text'] = num
 
@@ -124,5 +130,6 @@ def countMinesAround(x,y):
 
 # Calling main 
 root = Tk()
+root.title('Minesweeper!')
 main()
 root.mainloop()
